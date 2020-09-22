@@ -2,12 +2,15 @@ package gform
 
 import (
 	"database/sql"
+	"github.com/QXQZX/gofly-orm/gform/dialect"
 	"github.com/QXQZX/gofly-orm/gform/log"
 	"github.com/QXQZX/gofly-orm/gform/session"
 )
 
 type Engine struct {
-	db *sql.DB
+	db      *sql.DB
+	dbName  string
+	dialect dialect.Dialect
 }
 
 // create a new engine
@@ -23,7 +26,18 @@ func NewEngine(driver, source string) (e *Engine, err error) {
 		return nil, err
 	}
 
-	e = &Engine{db: db}
+	// make sure the specific dialect exists
+	dial, ok := dialect.GetDialect(driver)
+	if !ok {
+		log.Errorf("dialect %s Not Found", driver)
+		return
+	}
+
+	e = &Engine{
+		db:      db,
+		dbName:  driver,
+		dialect: dial,
+	}
 	log.Info(driver, "Database connect success")
 	return
 }
@@ -38,5 +52,5 @@ func (e *Engine) Close() {
 
 // create a session
 func (e *Engine) NewSession() *session.Session {
-	return session.New(e.db)
+	return session.New(e.db, e.dialect)
 }

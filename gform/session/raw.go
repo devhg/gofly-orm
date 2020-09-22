@@ -2,7 +2,9 @@ package session
 
 import (
 	"database/sql"
+	"github.com/QXQZX/gofly-orm/gform/dialect"
 	"github.com/QXQZX/gofly-orm/gform/log"
+	"github.com/QXQZX/gofly-orm/gform/schema"
 	"strings"
 )
 
@@ -11,14 +13,19 @@ import (
 //二是执行完成后，清空操作。这样 Session 可以复用，开启一次会话，
 //可以执行多次 SQL。
 type Session struct {
-	db  *sql.DB
-	sql strings.Builder
+	db       *sql.DB
+	sql      strings.Builder
+	dialect  dialect.Dialect
+	refTable *schema.Schema
 	// sql 中占位符对应的值
 	sqlVars []interface{}
 }
 
-func New(db *sql.DB) *Session {
-	return &Session{db: db}
+func New(db *sql.DB, dialect dialect.Dialect) *Session {
+	return &Session{
+		db:      db,
+		dialect: dialect,
+	}
 }
 
 func (s *Session) DB() *sql.DB {
@@ -61,4 +68,10 @@ func (s *Session) QueryRows() (rows *sql.Rows, err error) {
 		log.Error(err)
 	}
 	return
+}
+
+func NewSession_() *Session {
+	db, _ := sql.Open("sqlite3", "gofly.db")
+	getDialect, _ := dialect.GetDialect("sqlite3")
+	return New(db, getDialect)
 }
