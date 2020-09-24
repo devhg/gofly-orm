@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"fmt"
 	"github.com/QXQZX/gofly-orm/gform/dialect"
 	"go/ast"
 	"reflect"
@@ -31,9 +30,23 @@ func (s *Schema) GetField(name string) *Field {
 	return s.FieldMap[name]
 }
 
+//根据scheme对象结构字段信息，获取dest对象里对应字段的值
+func (s *Schema) RecordValues(dest interface{}) []interface{} {
+	destValue := reflect.Indirect(reflect.ValueOf(dest))
+	var fieldValues []interface{}
+	for _, field := range s.Fields {
+		fieldValues = append(fieldValues, destValue.FieldByName(field.Name).Interface())
+	}
+	return fieldValues
+}
+
+//利用反射(reflect)完成结构体和数据库表结构的映射，
+//包括表名、字段名、字段类型、 字段 tag 等
 func Parse(dest interface{}, d dialect.Dialect) *Schema {
 	//为设计的入参是一个对象的指针，因此需要 reflect.Indirect() 获取指针指向的实例
+	//dest结构体的信息
 	modelType := reflect.Indirect(reflect.ValueOf(dest)).Type()
+	//fmt.Println(modelType.Name()) // User
 	schema := &Schema{
 		Model:    dest,
 		Name:     modelType.Name(),
@@ -42,7 +55,6 @@ func Parse(dest interface{}, d dialect.Dialect) *Schema {
 	for i := 0; i < modelType.NumField(); i++ {
 		p := modelType.Field(i)
 		if !p.Anonymous && ast.IsExported(p.Name) {
-			fmt.Println(p.Type)
 			field := &Field{
 				Name: p.Name,
 				Type: d.DataTypeOf(reflect.Indirect(reflect.New(p.Type))),

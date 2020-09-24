@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"fmt"
 	"github.com/QXQZX/gofly-orm/gform/dialect"
 	"testing"
 )
@@ -22,4 +23,15 @@ func TestParse(t *testing.T) {
 	if schema.GetField("Name").Tag != "PRIMARY KEY" {
 		t.Fatal("failed to parse primary key")
 	}
+}
+
+func TestSchema_RecordValues(t *testing.T) {
+	u := User{
+		Name: "sss",
+		Age:  0,
+	}
+	schema := Parse(&User{}, TestDial)
+	values := schema.RecordValues(u)
+
+	fmt.Println(values)
 }

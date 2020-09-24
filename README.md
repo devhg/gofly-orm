@@ -1,3 +1,21 @@
+# gofly-orm ORM框架
+
+**一套go语言的orm框架**
+
+### TO DO
+- [x] 对象表结构映射
+- [x] 表的创建、删除、存在性判断
+- [x] 记录新增查询
+- [ ] 链式操作与更新删除
+- [ ] 实现钩子(Hooks)
+- [ ] 支持事务(Transaction)
+- [ ] 支持模板引擎 html/templates
+- [ ] ....
+
+
+### Use：
+
+```go
 package main
 
 import (
@@ -43,3 +61,7 @@ func main() {
 
 	fmt.Println(users)
 }
+```
+
+<hr>
+仅学习使用
