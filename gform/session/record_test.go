@@ -1,7 +1,10 @@
 package session
 
 import (
+	"fmt"
 	"testing"
+	// 导入时会注册 sqlite3 的驱动
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // schema_test.go
@@ -28,19 +31,36 @@ func testRecordInit(t *testing.T) *Session {
 	return s
 }
 
-func TestSession_Insert(t *testing.T) {
-	session := NewSession_()
-
-	model := session.Model(&User{})
-	u1 := &User{Name: "Tom", Age: 18}
-	u2 := &User{Name: "Sam", Age: 25}
-	_, _ = model.Insert(u1, u2)
-}
-
-func TestSession_Find(t *testing.T) {
+func TestSession_Limit(t *testing.T) {
 	s := testRecordInit(t)
 	var users []User
-	if err := s.Find(&users); err != nil || len(users) != 2 {
-		t.Fatal("failed to query all")
+	err := s.Limit(1).Find(&users)
+	if err != nil || len(users) != 1 {
+		t.Fatal("failed to query with limit condition")
 	}
+	fmt.Println(users)
+}
+
+func TestSession_Update(t *testing.T) {
+	s := testRecordInit(t)
+	affected, _ := s.Where("Name = ?", "Sam").Update("Age", 30)
+	u := &User{}
+	_ = s.OrderBy("Age DESC").First(u)
+
+	if affected != 1 || u.Age != 30 {
+		t.Fatal("failed to update")
+	}
+	fmt.Println(u)
+}
+
+func TestSession_DeleteAndCount(t *testing.T) {
+	s := testRecordInit(t)
+	affected, _ := s.Where("Name = ?", "Tom").Delete()
+	count, _ := s.Count()
+	fmt.Println("affected", affected)
+	println(count)
+	if affected != 1 || count != 1 {
+		t.Fatal("failed to delete or count")
+	}
+
 }

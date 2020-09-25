@@ -3,10 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/QXQZX/gofly-orm/gform"
+	"github.com/QXQZX/gofly-orm/gform/session"
 	"log"
-
-	// 导入时会注册 sqlite3 的驱动
-	_ "github.com/mattn/go-sqlite3"
 )
 
 type User struct {
@@ -26,6 +24,13 @@ func main() {
 	defer engine.Close()
 	s := engine.NewSession().Model(&User{})
 
+	testInsert(s)
+	//test_Limit(s)
+	//testUpdateFirstOrder(s)
+	testDeleteAndCount(s)
+}
+
+func testInsert(s *session.Session) {
 	err1 := s.DropTable()
 	err2 := s.CreateTable()
 
@@ -40,6 +45,36 @@ func main() {
 	if err := s.Find(&users); err != nil {
 		log.Fatal("failed to query all")
 	}
-
 	fmt.Println(users)
+}
+
+func test_Limit(s *session.Session) {
+	var users []User
+	err := s.Limit(2).Find(&users)
+	if err != nil || len(users) != 2 {
+		log.Fatal("failed to query with limit condition")
+	}
+	fmt.Println(users)
+}
+
+func testUpdateFirstOrder(s *session.Session) {
+	affected, _ := s.Where("Name = ?", "Tom").Update("Age", 310)
+	u := &User{}
+	_ = s.OrderBy("Age DESC").First(u)
+
+	if affected != 1 || u.Age != 310 {
+		log.Fatal("failed to update")
+	}
+	fmt.Println(u)
+}
+
+func testDeleteAndCount(s *session.Session) {
+	affected, _ := s.Where("Name = ?", "Tom").Delete()
+	fmt.Println(affected)
+	count, _ := s.Count()
+
+	if affected != 1 || count != 2 {
+		log.Fatal("failed to delete or count")
+	}
+	fmt.Println(count)
 }

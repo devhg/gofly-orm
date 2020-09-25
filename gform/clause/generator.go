@@ -17,10 +17,13 @@ func init() {
 	generators[VALUES] = _values
 	generators[ORDERBY] = _orderBy
 	generators[WHERE] = _where
+	generators[UPDATE] = _update
+	generators[DELETE] = _delete
+	generators[COUNT] = _count
 }
 
 // INSERT INTO $tableName ($fields)
-//string, []string{}
+//tableName string, fields []string{}
 func _insert(values ...interface{}) (string, []interface{}) {
 	tableName := values[0]
 	fields := strings.Join(values[1].([]string), ",")
@@ -44,7 +47,6 @@ func _limit(values ...interface{}) (string, []interface{}) {
 //_values([]interface{}{"dev", 18, "男"}, []interface{}{"dev", 18})
 //VALUES (?, ?, ?), (?, ?, ?)
 func _values(values ...interface{}) (string, []interface{}) {
-	fmt.Println("_values", values)
 	var bindString string
 	var sql strings.Builder
 	var vars []interface{}
@@ -84,4 +86,28 @@ func genBindVars(num int) string {
 		vars = append(vars, "?")
 	}
 	return strings.Join(vars, ", ")
+}
+
+func _delete(values ...interface{}) (string, []interface{}) {
+	return fmt.Sprintf("DELETE FROM %s", values[0]), []interface{}{}
+}
+
+func _update(values ...interface{}) (string, []interface{}) {
+	tableName := values[0]
+	data := values[1].(map[string]interface{})
+
+	var fields []string
+	var vars []interface{}
+
+	for key, val := range data {
+		fields = append(fields, key+"=?")
+		vars = append(vars, val)
+	}
+
+	return fmt.Sprintf("UPDATE %s SET %s", tableName,
+		strings.Join(fields, ", ")), vars
+}
+
+func _count(values ...interface{}) (string, []interface{}) {
+	return _select(values[0], []string{"count(*)"})
 }

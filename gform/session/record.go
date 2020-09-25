@@ -1,9 +1,18 @@
 package session
 
 import (
+	"errors"
 	"github.com/QXQZX/gofly-orm/gform/clause"
 	"reflect"
 )
+
+func (s *Session) runSQL(sql string, vars []interface{}) (int64, error) {
+	exec, err := s.Raw(sql, vars...).Exec()
+	if err != nil {
+		return 0, err
+	}
+	return exec.RowsAffected()
+}
 
 func (s *Session) Insert(values ...interface{}) (int64, error) {
 	recordValues := make([]interface{}, 0)
@@ -69,4 +78,76 @@ func (s *Session) Find(values interface{}) error {
 		destSlice.Set(reflect.Append(destSlice, dest))
 	}
 	return rows.Close()
+}
+
+//支持Update(map[string]interface{}{"Name": "zgh", "Age": 18})
+//同时支持Update("Name", "zgh", "Age", 18, ...)
+func (s *Session) Update(values ...interface{}) (int64, error) {
+	m, ok := values[0].(map[string]interface{})
+	if !ok {
+		m = make(map[string]interface{})
+		length := len(values)
+		for i := 0; i < length; i += 2 {
+			m[values[i].(string)] = values[i+1]
+		}
+	}
+
+	s.clause.Set(clause.UPDATE, s.RefTable().Name, m)
+	sql, vars := s.clause.Build(clause.UPDATE, clause.WHERE)
+
+	return s.runSQL(sql, vars)
+}
+
+func (s *Session) Delete() (int64, error) {
+	s.clause.Set(clause.DELETE, s.RefTable().Name)
+	sql, vars := s.clause.Build(clause.DELETE, clause.WHERE)
+	return s.runSQL(sql, vars)
+}
+
+func (s *Session) Count() (int64, error) {
+	s.clause.Set(clause.COUNT, s.RefTable().Name)
+	sql, vars := s.clause.Build(clause.COUNT, clause.WHERE)
+
+	row := s.Raw(sql, vars...).QueryRow()
+	var tmp int64
+	if err := row.Scan(&tmp); err != nil {
+		return 0, err
+	}
+	return tmp, nil
+}
+
+//support chain
+
+// "name=? and age>?", "devhui", 20
+func (s *Session) Where(desc string, args ...interface{}) *Session {
+	var vars []interface{}
+	s.clause.Set(clause.WHERE, append(append(vars, desc), args...)...)
+	return s
+}
+
+// LIMIT ?
+func (s *Session) Limit(num int) *Session {
+	s.clause.Set(clause.LIMIT, num)
+	return s
+}
+
+// ORDERBY %s
+func (s *Session) OrderBy(desc string) *Session {
+	s.clause.Set(clause.ORDERBY, desc)
+	return s
+}
+
+func (s *Session) First(value interface{}) error {
+	dest := reflect.Indirect(reflect.ValueOf(value))
+	destSlice := reflect.New(reflect.SliceOf(dest.Type())).Elem()
+
+	if err := s.Limit(1).Find(destSlice.Addr().Interface()); err != nil {
+		return err
+	}
+
+	if destSlice.Len() == 0 {
+		return errors.New("Not found")
+	}
+	dest.Set(destSlice.Index(0))
+	return nil
 }

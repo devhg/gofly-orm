@@ -7,6 +7,9 @@ import (
 	"github.com/QXQZX/gofly-orm/gform/log"
 	"github.com/QXQZX/gofly-orm/gform/schema"
 	"strings"
+
+	// 导入时会注册 sqlite3 的驱动
+	_ "github.com/mattn/go-sqlite3"
 )
 
 //Session 负责与数据库的交互，那交互前的准备工作（比如连接/测试数据库）
@@ -64,13 +67,15 @@ func (s *Session) Exec() (result sql.Result, err error) {
 }
 
 // package the QueryRow() method
-func (s *Session) Query() *sql.Row {
+// QueryRow gets a record from db
+func (s *Session) QueryRow() *sql.Row {
 	defer s.Clear()
 	log.Info(s.sql.String(), s.sqlVars)
 	return s.DB().QueryRow(s.sql.String(), s.sqlVars...)
 }
 
 // package the Query() method
+// QueryRows gets a list of records from db
 func (s *Session) QueryRows() (rows *sql.Rows, err error) {
 	defer s.Clear()
 	log.Info(s.sql.String(), s.sqlVars)
@@ -81,7 +86,10 @@ func (s *Session) QueryRows() (rows *sql.Rows, err error) {
 }
 
 func NewSession_() *Session {
-	db, _ := sql.Open("sqlite3", "gofly.db")
+	db, err := sql.Open("sqlite3", "gofly.db")
+	if err != nil {
+		panic(err)
+	}
 	getDialect, _ := dialect.GetDialect("sqlite3")
 	return New(db, getDialect)
 }

@@ -6,16 +6,15 @@
 - [x] 对象表结构映射
 - [x] 表的创建、删除、存在性判断
 - [x] 记录新增查询
-- [ ] 链式操作与更新删除
+- [x] 链式操作与更新删除(Chain)
 - [ ] 实现钩子(Hooks)
 - [ ] 支持事务(Transaction)
-- [ ] 支持模板引擎 html/templates
 - [ ] ....
 
 
 ### Use：
 
-```go
+```golang
 package main
 
 import (
