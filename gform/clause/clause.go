@@ -16,6 +16,9 @@ const (
 	LIMIT
 	WHERE
 	ORDERBY
+	UPDATE
+	DELETE
+	COUNT
 )
 
 func (c *Clause) Set(p Type, vars ...interface{}) {

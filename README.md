@@ -8,7 +8,7 @@
 - [x] 记录新增查询
 - [x] 链式操作与更新删除(Chain)
 - [x] 实现钩子(Hooks)
-- [ ] 支持事务(Transaction)
+- [x] 支持事务(Transaction)
 - [ ] ....
 
 

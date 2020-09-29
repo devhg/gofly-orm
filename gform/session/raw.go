@@ -17,8 +17,8 @@ import (
 //二是执行完成后，清空操作。这样 Session 可以复用，开启一次会话，
 //可以执行多次 SQL。
 type Session struct {
-	db *sql.DB
-
+	db  *sql.DB
+	tx  *sql.Tx
 	sql strings.Builder
 	// sql 中占位符对应的值
 	sqlVars []interface{}
@@ -33,6 +33,16 @@ type Session struct {
 	clause clause.Clause
 }
 
+// CommonDB is a minimal function set of db
+type CommonDB interface {
+	Query(query string, args ...interface{}) (*sql.Rows, error)
+	QueryRow(query string, args ...interface{}) *sql.Row
+	Exec(query string, args ...interface{}) (sql.Result, error)
+}
+
+var _ CommonDB = (*sql.DB)(nil)
+var _ CommonDB = (*sql.Tx)(nil)
+
 func New(db *sql.DB, dialect dialect.Dialect) *Session {
 	return &Session{
 		db:      db,
@@ -40,7 +50,11 @@ func New(db *sql.DB, dialect dialect.Dialect) *Session {
 	}
 }
 
-func (s *Session) DB() *sql.DB {
+// DB returns tx if a tx begins. otherwise return *sql.DB
+func (s *Session) DB() CommonDB {
+	if s.tx != nil {
+		return s.tx
+	}
 	return s.db
 }
 
