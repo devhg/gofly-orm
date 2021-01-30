@@ -3,7 +3,7 @@ package dialect
 import "reflect"
 
 //为适配不同的数据库，映射数据类型和特定的 SQL 语句，
-//创建 Dialect 层屏蔽数据库差异。
+//创建 Dialect 层结局数据库之间差异。
 //day2
 
 var dialectMap = map[string]Dialect{}

@@ -2,8 +2,8 @@ package session
 
 import (
 	"fmt"
-	"github.com/QXQZX/gofly-orm/gform/log"
-	"github.com/QXQZX/gofly-orm/gform/schema"
+	"github.com/cddgo/gofly-orm/log"
+	"github.com/cddgo/gofly-orm/schema"
 	"reflect"
 	"strings"
 )

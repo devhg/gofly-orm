@@ -1,10 +1,7 @@
-module github.com/QXQZX/gofly-orm
+module github.com/cddgo/gofly-orm-test
 
 go 1.13
 
-require (
-	github.com/QXQZX/gofly-orm/gform v0.0.0-00010101000000-000000000000
-	github.com/mattn/go-sqlite3 v2.0.3+incompatible
-)
+require github.com/cddgo/gofly-orm v0.0.0
 
-replace github.com/QXQZX/gofly-orm/gform => ./gform
+replace github.com/cddgo/gofly-orm => ./gform

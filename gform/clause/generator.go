@@ -69,6 +69,7 @@ func _values(values ...interface{}) (string, []interface{}) {
 	return sql.String(), vars
 }
 
+// .where("name=? and age>?, "12313", 18)
 func _where(values ...interface{}) (string, []interface{}) {
 	// WHERE $desc
 	desc, vars := values[0], values[1:]
@@ -88,10 +89,14 @@ func genBindVars(num int) string {
 	return strings.Join(vars, ", ")
 }
 
+// .delete("User")
+// delete from User, []{}
 func _delete(values ...interface{}) (string, []interface{}) {
 	return fmt.Sprintf("DELETE FROM %s", values[0]), []interface{}{}
 }
 
+// .update("User", map[string]string{age: 18})
+// update User set age=?, []{18}
 func _update(values ...interface{}) (string, []interface{}) {
 	tableName := values[0]
 	data := values[1].(map[string]interface{})

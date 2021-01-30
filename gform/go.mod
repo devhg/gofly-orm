@@ -1,4 +1,4 @@
-module github.com/QXQZX/gofly-orm/gform
+module github.com/cddgo/gofly-orm
 
 go 1.13
 

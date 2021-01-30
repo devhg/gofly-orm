@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/QXQZX/gofly-orm/gform"
-	"github.com/QXQZX/gofly-orm/gform/session"
+	gform "github.com/cddgo/gofly-orm"
+	"github.com/cddgo/gofly-orm/session"
 	"log"
 )
 
@@ -19,7 +19,6 @@ var (
 )
 
 func main() {
-
 	engine, _ := gform.NewEngine("sqlite3", "gofly.db")
 	defer engine.Close()
 	s := engine.NewSession().Model(&User{})

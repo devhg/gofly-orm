@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"github.com/QXQZX/gofly-orm/gform/dialect"
+	"github.com/cddgo/gofly-orm/dialect"
 	"go/ast"
 	"reflect"
 )

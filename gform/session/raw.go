@@ -2,10 +2,10 @@ package session
 
 import (
 	"database/sql"
-	"github.com/QXQZX/gofly-orm/gform/clause"
-	"github.com/QXQZX/gofly-orm/gform/dialect"
-	"github.com/QXQZX/gofly-orm/gform/log"
-	"github.com/QXQZX/gofly-orm/gform/schema"
+	"github.com/cddgo/gofly-orm/clause"
+	"github.com/cddgo/gofly-orm/dialect"
+	"github.com/cddgo/gofly-orm/log"
+	"github.com/cddgo/gofly-orm/schema"
 	"strings"
 
 	// 导入时会注册 sqlite3 的驱动
@@ -34,15 +34,18 @@ type Session struct {
 }
 
 // CommonDB is a minimal function set of db
+// sql.DB sql.Tx 都包含下面的函数，进而他们都实现了 下面的 接口
 type CommonDB interface {
 	Query(query string, args ...interface{}) (*sql.Rows, error)
 	QueryRow(query string, args ...interface{}) *sql.Row
 	Exec(query string, args ...interface{}) (sql.Result, error)
 }
 
+// 验证接口的有效性
 var _ CommonDB = (*sql.DB)(nil)
 var _ CommonDB = (*sql.Tx)(nil)
 
+// 创建一个 session 对象
 func New(db *sql.DB, dialect dialect.Dialect) *Session {
 	return &Session{
 		db:      db,
@@ -58,6 +61,7 @@ func (s *Session) DB() CommonDB {
 	return s.db
 }
 
+// 存储sql   和  参数
 func (s *Session) Raw(sql string, vars ...interface{}) *Session {
 	s.sql.WriteString(sql)
 	s.sql.WriteString(" ")
@@ -65,12 +69,14 @@ func (s *Session) Raw(sql string, vars ...interface{}) *Session {
 	return s
 }
 
+// 清理sql串 和 参数
 func (s *Session) Clear() {
 	s.sql.Reset()
 	s.sqlVars = nil
 	s.clause = clause.Clause{}
 }
 
+// 执行sql
 func (s *Session) Exec() (result sql.Result, err error) {
 	defer s.Clear()
 	log.Info(s.sql.String(), s.sqlVars)
@@ -99,6 +105,7 @@ func (s *Session) QueryRows() (rows *sql.Rows, err error) {
 	return
 }
 
+// for test
 func NewSession_() *Session {
 	db, err := sql.Open("sqlite3", "gofly.db")
 	if err != nil {

@@ -1,7 +1,7 @@
 package session
 
 import (
-	"github.com/QXQZX/gofly-orm/gform/log"
+	"github.com/cddgo/gofly-orm/log"
 	"reflect"
 )
 

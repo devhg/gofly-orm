@@ -2,7 +2,7 @@ package gform
 
 import (
 	"errors"
-	"github.com/QXQZX/gofly-orm/gform/session"
+	"github.com/cddgo/gofly-orm/session"
 	"testing"
 )
 

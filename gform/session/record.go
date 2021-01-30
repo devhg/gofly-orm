@@ -2,7 +2,7 @@ package session
 
 import (
 	"errors"
-	"github.com/QXQZX/gofly-orm/gform/clause"
+	"github.com/cddgo/gofly-orm/clause"
 	"reflect"
 )
 
