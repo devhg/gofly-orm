@@ -12,6 +12,9 @@
 - [ ] ....
 
 
+### Structure
+![](./images/gofly-orm.png)
+
 ### Use：
 
 ```golang
