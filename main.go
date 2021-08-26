@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	gform "github.com/cddgo/gofly-orm"
-	"github.com/cddgo/gofly-orm/session"
 	"log"
+
+	gform "github.com/devhg/gofly-orm"
+	"github.com/devhg/gofly-orm/session"
 )
 
 type User struct {
@@ -24,8 +25,8 @@ func main() {
 	s := engine.NewSession().Model(&User{})
 
 	testInsert(s)
-	//test_Limit(s)
-	//testUpdateFirstOrder(s)
+	// test_Limit(s)
+	// testUpdateFirstOrder(s)
 	testDeleteAndCount(s)
 }
 
@@ -47,7 +48,7 @@ func testInsert(s *session.Session) {
 	fmt.Println(users)
 }
 
-func test_Limit(s *session.Session) {
+func testLimit(s *session.Session) {
 	var users []User
 	err := s.Limit(2).Find(&users)
 	if err != nil || len(users) != 2 {

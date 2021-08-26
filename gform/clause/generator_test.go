@@ -10,7 +10,7 @@ func Test__insert(t *testing.T) {
 }
 
 func testVals(vals ...interface{}) {
-	//fmt.Println(vals)
+	// fmt.Println(vals)
 }
 
 func TestMY(t *testing.T) {

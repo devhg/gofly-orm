@@ -2,24 +2,26 @@ package session
 
 import (
 	"database/sql"
-	"github.com/cddgo/gofly-orm/clause"
-	"github.com/cddgo/gofly-orm/dialect"
-	"github.com/cddgo/gofly-orm/log"
-	"github.com/cddgo/gofly-orm/schema"
 	"strings"
 
 	// 导入时会注册 sqlite3 的驱动
 	_ "github.com/mattn/go-sqlite3"
+
+	"github.com/devhg/gofly-orm/clause"
+	"github.com/devhg/gofly-orm/dialect"
+	"github.com/devhg/gofly-orm/log"
+	"github.com/devhg/gofly-orm/schema"
 )
 
-//Session 负责与数据库的交互，那交互前的准备工作（比如连接/测试数据库）
-//封装有两个目的，一是统一打印日志（包括 执行的SQL 语句和错误日志）。
-//二是执行完成后，清空操作。这样 Session 可以复用，开启一次会话，
-//可以执行多次 SQL。
+// Session 负责与数据库的交互，那交互前的准备工作（比如连接/测试数据库）
+// 封装有两个目的，一是统一打印日志（包括 执行的SQL 语句和错误日志）。
+// 二是执行完成后，清空操作。这样 Session 可以复用，开启一次会话，
+// 可以执行多次 SQL。
 type Session struct {
 	db  *sql.DB
 	tx  *sql.Tx
 	sql strings.Builder
+
 	// sql 中占位符对应的值
 	sqlVars []interface{}
 
@@ -106,7 +108,7 @@ func (s *Session) QueryRows() (rows *sql.Rows, err error) {
 }
 
 // for test
-func NewSession_() *Session {
+func NewSession2() *Session {
 	db, err := sql.Open("sqlite3", "gofly.db")
 	if err != nil {
 		panic(err)

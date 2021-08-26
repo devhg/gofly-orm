@@ -33,10 +33,9 @@ func (c *Clause) Set(p Type, vars ...interface{}) {
 	c.sqlVars[p] = rVars
 }
 
-//根据传入序列生成 SELECT  WHERE ORDERBY...
-//bug：复杂sql存在问题
+// 根据传入序列生成 SELECT  WHERE ORDERBY...
+// bug：复杂sql存在问题
 func (c *Clause) Build(orders ...Type) (string, []interface{}) {
-
 	var sqls []string
 	var vars []interface{}
 	for _, order := range orders {

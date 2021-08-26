@@ -2,8 +2,9 @@ package session
 
 import (
 	"fmt"
-	"github.com/cddgo/gofly-orm/log"
 	"testing"
+
+	"github.com/devhg/gofly-orm/log"
 )
 
 type Account struct {
@@ -23,7 +24,7 @@ func (a *Account) AfterQuery(s *Session) {
 }
 
 func TestSession_CallMethod(t *testing.T) {
-	s := NewSession_().Model(&Account{})
+	s := NewSession2().Model(&Account{})
 	_ = s.DropTable()
 	_ = s.CreateTable()
 	_, _ = s.Insert(&Account{1, "asa"}, &Account{2, "qwe"})

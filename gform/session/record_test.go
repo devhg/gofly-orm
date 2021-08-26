@@ -3,6 +3,7 @@ package session
 import (
 	"fmt"
 	"testing"
+
 	// 导入时会注册 sqlite3 的驱动
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -21,7 +22,7 @@ var (
 
 func testRecordInit(t *testing.T) *Session {
 	t.Helper()
-	s := NewSession_().Model(&User{})
+	s := NewSession2().Model(&User{})
 	err1 := s.DropTable()
 	err2 := s.CreateTable()
 	_, err3 := s.Insert(user1, user2)
@@ -62,5 +63,4 @@ func TestSession_DeleteAndCount(t *testing.T) {
 	if affected != 1 || count != 1 {
 		t.Fatal("failed to delete or count")
 	}
-
 }

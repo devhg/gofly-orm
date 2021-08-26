@@ -2,8 +2,9 @@ package gform
 
 import (
 	"errors"
-	"github.com/cddgo/gofly-orm/session"
 	"testing"
+
+	"github.com/devhg/gofly-orm/session"
 )
 
 func OpenDB(t *testing.T) *Engine {
@@ -27,7 +28,7 @@ func transactionRollback(t *testing.T) {
 	_ = s.Model(&User{}).DropTable()
 	_, err := engine.Transaction(func(s *session.Session) (result interface{}, err error) {
 		_ = s.Model(&User{}).CreateTable()
-		_, err = s.Insert(&User{"Tom", 18})
+		_, _ = s.Insert(&User{"Tom", 18})
 		return nil, errors.New("Error")
 	})
 	if err == nil || s.HasTable() {

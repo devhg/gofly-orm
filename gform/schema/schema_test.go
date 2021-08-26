@@ -2,8 +2,9 @@ package schema
 
 import (
 	"fmt"
-	"github.com/QXQZX/gofly-orm/gform/dialect"
 	"testing"
+
+	"github.com/devhg/gofly-orm/dialect"
 )
 
 // schema_test.go
@@ -15,7 +16,6 @@ type User struct {
 var TestDial, _ = dialect.GetDialect("sqlite3")
 
 func TestParse(t *testing.T) {
-
 	schema := Parse(&User{}, TestDial)
 	if schema.Name != "User" || len(schema.Fields) != 2 {
 		t.Fatal("failed to parse User struct")

@@ -1,4 +1,4 @@
-module github.com/cddgo/gofly-orm
+module github.com/devhg/gofly-orm
 
 go 1.13
 

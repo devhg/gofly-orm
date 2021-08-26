@@ -2,16 +2,17 @@ package session
 
 import (
 	"fmt"
-	"github.com/cddgo/gofly-orm/log"
-	"github.com/cddgo/gofly-orm/schema"
 	"reflect"
 	"strings"
+
+	"github.com/devhg/gofly-orm/log"
+	"github.com/devhg/gofly-orm/schema"
 )
 
-//Model() 方法用于给 refTable 赋值。解析操作是比较耗时的，
-//因此将解析的结果保存在成员变量 refTable 中，即使 Model()
-//被调用多次，如果传入的结构体名称不发生变化，则不会更新
-//refTable 的值。
+// Model() 方法用于给 refTable 赋值。解析操作是比较耗时的，
+// 因此将解析的结果保存在成员变量 refTable 中，即使 Model()
+// 被调用多次，如果传入的结构体名称不发生变化，则不会更新
+// refTable 的值。
 func (s *Session) Model(value interface{}) *Session {
 	// nil or different model, update refTable
 	if s.refTable == nil || reflect.TypeOf(value) != reflect.TypeOf(s.refTable.Model) {
@@ -27,7 +28,7 @@ func (s *Session) RefTable() *schema.Schema {
 	return s.refTable
 }
 
-// 创建
+// CreateTable 创建
 func (s *Session) CreateTable() error {
 	table := s.RefTable()
 	var columns []string
@@ -41,15 +42,15 @@ func (s *Session) CreateTable() error {
 	return err
 }
 
-//删除
+// DropTable 删除
 func (s *Session) DropTable() error {
 	_, err := s.Raw(fmt.Sprintf("DROP TABLE IF EXISTS %s;", s.RefTable().Name)).Exec()
 	return err
 }
 
-//存在性判断
+// HasTable 存在性判断
 func (s *Session) HasTable() bool {
-	sql, values := s.dialect.TableExistSql(s.RefTable().Name)
+	sql, values := s.dialect.TableExistSQL(s.RefTable().Name)
 	row := s.Raw(sql, values...).QueryRow()
 	var tmp string
 	_ = row.Scan(&tmp)

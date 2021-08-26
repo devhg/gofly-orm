@@ -1,6 +1,6 @@
 package session
 
-import "github.com/cddgo/gofly-orm/log"
+import "github.com/devhg/gofly-orm/log"
 
 func (s *Session) Begin() (err error) {
 	log.Info("transaction begin")

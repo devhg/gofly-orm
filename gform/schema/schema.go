@@ -1,9 +1,10 @@
 package schema
 
 import (
-	"github.com/cddgo/gofly-orm/dialect"
 	"go/ast"
 	"reflect"
+
+	"github.com/devhg/gofly-orm/dialect"
 )
 
 // Field represents a column of database
@@ -13,10 +14,8 @@ type Field struct {
 	Tag  string
 }
 
-//设计 Schema，利用反射(reflect)完成结构体和
-//数据库表结构的映射，包括表名、字段名、字段类型、
-//字段 tag 等
-
+// 设计 Schema，利用反射(reflect)完成结构体和数据库表结构的映射，
+// 包括表名、字段名、字段类型、字段 tag 等
 // Schema represents a table of database
 type Schema struct {
 	Model      interface{}
@@ -30,7 +29,7 @@ func (s *Schema) GetField(name string) *Field {
 	return s.FieldMap[name]
 }
 
-//根据scheme对象结构字段信息，获取dest对象里对应字段的值
+// RecordValues 根据scheme对象结构字段信息，获取dest对象里对应字段的值
 func (s *Schema) RecordValues(dest interface{}) []interface{} {
 	destValue := reflect.Indirect(reflect.ValueOf(dest))
 	var fieldValues []interface{}
@@ -40,13 +39,13 @@ func (s *Schema) RecordValues(dest interface{}) []interface{} {
 	return fieldValues
 }
 
-//利用反射(reflect)完成结构体和数据库表结构的映射，
-//包括表名、字段名、字段类型、 字段 tag 等
+// Parse 利用反射(reflect)完成结构体和数据库表结构的映射，
+// 包括表名、字段名、字段类型、 字段 tag 等
 func Parse(dest interface{}, d dialect.Dialect) *Schema {
-	//为设计的入参是一个对象的指针，因此需要 reflect.Indirect() 获取指针指向的实例
-	//dest结构体的信息
+	// 为设计的入参是一个对象的指针，因此需要 reflect.Indirect() 获取指针指向的实例
+	// dest结构体的信息
 	modelType := reflect.Indirect(reflect.ValueOf(dest)).Type()
-	//fmt.Println(modelType.Name()) // User
+	// fmt.Println(modelType.Name()) // User
 	schema := &Schema{
 		Model:    dest,
 		Name:     modelType.Name(),

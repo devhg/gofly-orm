@@ -2,9 +2,10 @@ package gform
 
 import (
 	"database/sql"
-	"github.com/cddgo/gofly-orm/dialect"
-	"github.com/cddgo/gofly-orm/log"
-	"github.com/cddgo/gofly-orm/session"
+
+	"github.com/devhg/gofly-orm/dialect"
+	"github.com/devhg/gofly-orm/log"
+	"github.com/devhg/gofly-orm/session"
 )
 
 type Engine struct {

@@ -23,7 +23,7 @@ func init() {
 }
 
 // INSERT INTO $tableName ($fields)
-//tableName string, fields []string{}
+// tableName string, fields []string{}
 func _insert(values ...interface{}) (string, []interface{}) {
 	tableName := values[0]
 	fields := strings.Join(values[1].([]string), ",")
@@ -31,7 +31,7 @@ func _insert(values ...interface{}) (string, []interface{}) {
 }
 
 // SELECT ($fields) FROM $tableName
-//string, []string{}
+// string, []string{}
 func _select(values ...interface{}) (string, []interface{}) {
 	tableName := values[0]
 	fields := strings.Join(values[1].([]string), ",")
@@ -44,8 +44,8 @@ func _limit(values ...interface{}) (string, []interface{}) {
 
 // VALUES ($v1), ($v2), ...
 // bug: 每一个value的参数个数不同， 如下
-//_values([]interface{}{"dev", 18, "男"}, []interface{}{"dev", 18})
-//VALUES (?, ?, ?), (?, ?, ?)
+// _values([]interface{}{"dev", 18, "男"}, []interface{}{"dev", 18})
+// VALUES (?, ?, ?), (?, ?, ?)
 func _values(values ...interface{}) (string, []interface{}) {
 	var bindString string
 	var sql strings.Builder

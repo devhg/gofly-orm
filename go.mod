@@ -1,7 +1,7 @@
-module github.com/cddgo/gofly-orm-test
+module github.com/devhg/gofly-orm/demo
 
 go 1.13
 
-require github.com/cddgo/gofly-orm v0.0.0
+require github.com/devhg/gofly-orm v0.0.0
 
-replace github.com/cddgo/gofly-orm => ./gform
+replace github.com/devhg/gofly-orm => ./gform
